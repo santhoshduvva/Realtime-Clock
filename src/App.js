@@ -1,22 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8080");
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setTime(message.data);
+    };
+
+    return () => socket.close();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Real-Time Clock</h1>
+        <p>{time}</p>
       </header>
     </div>
   );
